@@ -1,14 +1,11 @@
 const inquirer = require("inquirer");
-const path = require("path");
 const fs = require("fs");
 const Manager = require("./JS/Manager");
-const Employee = require("./JS/Employee");
 const Intern = require("./JS/Intern");
 const Engineer = require("./JS/Engineer");
+const templete = require("./Src/templete");
 
 const teamMember = [];
-
-const id = [];
 
 function menu() {
   function createManager() {
@@ -58,7 +55,6 @@ function menu() {
         },
       ])
       .then((userInput) => {
-        console.log(userInput);
         const manager = new Manager(
           userInput.managerName,
           userInput.managerId,
@@ -66,7 +62,6 @@ function menu() {
           userInput.managerNumber
         );
         teamMember.push(manager);
-        id.push(userInput.managerId);
         addTeamMember();
       });
   }
@@ -99,25 +94,23 @@ function menu() {
   }
 
   function addEngineer() {
-    console.log("In engineer");
     inquirer
       .prompt([
         {
           type: "input",
           name: "engineerName",
-          message: "What is the egineer's name?",
+          message: "What is the engineer's name?",
           validate: (answer) => {
             if (answer !== "") {
               return true;
             }
-            return "Please enter a value for managers name";
+            return "Please enter a value for engineer's name";
           },
         },
         {
           type: "input",
           name: "engineerId",
           message: "What is the engineer's id number?",
-          //todo validate- needs to be a number
         },
         {
           type: "input",
@@ -134,7 +127,7 @@ function menu() {
         {
           type: "input",
           name: "engineerGithub",
-          message: "What is the enigeer's Github?",
+          message: "What is the engineer's Github?",
           //validate: answer => {
 
           //if(answer !== ""){
@@ -145,7 +138,6 @@ function menu() {
         },
       ])
       .then((userInput) => {
-        console.log(userInput);
         const engineer = new Engineer(
           userInput.engineerName,
           userInput.engineerId,
@@ -153,19 +145,75 @@ function menu() {
           userInput.engineerGithub
         );
         teamMember.push(engineer);
-        id.push(userInput.engineerId);
+
         addTeamMember();
       });
   }
 
-  //todo add this
   function addIntern() {
-    console.log("in intern");
-  }
+    inquirer
+      .prompt([
+        {
+          type: "input",
+          name: "internName",
+          message: "What is the intern's name?",
+          validate: (answer) => {
+            if (answer !== "") {
+              return true;
+            }
+            return "Please enter a value for intern's name";
+          },
+        },
+        {
+          type: "input",
+          name: "internId",
+          message: "What is the intern's id number?",
+          //todo validate- needs to be a number
+        },
+        {
+          type: "input",
+          name: "internEmail",
+          message: "What is the intern's email?",
+          //validate: answer => {
+          //todo email has to be email- regex
+          //if(answer !== ""){
+          //return true
+          //}
+          //return "Please enter a value for managers name"
+          // }
+        },
+        {
+          type: "input",
+          name: "internGithub",
+          message: "What school does the intern go to?",
+          //validate: answer => {
 
+          //if(answer !== ""){
+          //    return true
+          //}
+          // return "Please enter a value for managers name"
+          //}
+        },
+      ])
+      .then((userInput) => {
+        const intern = new Intern(
+          userInput.internName,
+          userInput.internId,
+          userInput.internEmail,
+          userInput.internGithub
+        );
+        teamMember.push(intern);
+
+        addTeamMember();
+      });
+  }
+  //todo add this
   function buildHTML() {
-    console.log(teamMember);
-    fs.writeFile("index.html", teamMember);
+    fs.writeFile("index.html", templete.generateTeam(teamMember), (err) => {
+      if (err) {
+        throw err;
+      }
+    });
   }
 
   createManager();
